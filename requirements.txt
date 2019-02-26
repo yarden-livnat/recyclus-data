@@ -1,0 +1,6 @@
+flask
+flask_restplus
+flask_pymongo
+flask_script
+redis
+webargs
