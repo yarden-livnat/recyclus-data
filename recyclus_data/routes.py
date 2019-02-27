@@ -1,16 +1,18 @@
-from flask import Blueprint, current_app as app, request
+from flask import Blueprint, current_app as app, request, send_file
 from flask_restplus import Api, Resource
 from webargs.flaskparser import use_args
 from pathlib import Path
 
-from .schema import store_args, internal_store_args
-from .datastore import datastore
+from .schema import store_args, internal_store_args, list_args, fetch_args
+from . import datastore
+
+
 blueprint = Blueprint('api', __name__)
 
 api = Api(blueprint,
           title='Recyclus data service',
           version='1.0',
-          description='Remote cyclus data services api',
+          description='Remote Cyclus data services api',
           doc='/doc/')
 
 
@@ -18,16 +20,35 @@ api = Api(blueprint,
 class Store(Resource):
     @use_args(internal_store_args)
     def post(self, args):
-        path = Path('/repository') / args['jobid']
-        path.mkdir(parents=True, exist_ok=True)
-        for name, f in request.files.items():
-            app.logger.debug('fields: %s: %s ', name, f.filename)
-            f.save(str(path / f.filename))
-        datastore.db.files.insert_one({
-            'user': args['user'],
-            'jobid': args['jobid'],
-            'files': request.files.keys()
-        })
+        datastore.store(args, request.files)
+
+
+@api.route('/list')
+class User(Resource):
+    @use_args(list_args)
+    def get(self, args):
+        identity = args.pop('identity')
+        args['user'] = identity['user']
+        return datastore.find(args)
+
+
+@api.route('/fetch')
+class Fetch(Resource):
+
+    @use_args(fetch_args)
+    def get(self, args):
+        identity = args.pop('identity')
+        args['user'] = identity['user']
+        try:
+            path, name = datastore.fetch(identity['user'], args['jobid'], args['file'])
+            return send_file(path, attachment_filename=name)
+        except FileNotFoundError:
+            return {
+                    'message': 'File not found',
+                    'user': identity['user'],
+                    'jobid': args['jobid'],
+                    'filename': args['file']
+                   }, 404
 
 
 # @api.route('/store')
@@ -47,14 +68,4 @@ class Store(Resource):
 #         for name, f in request.files.items():
 #             app.logger.debug('fields: %s: %s ', name, f.filename)
 #             f.save(str(path / f.filename))
-
-
-@api.route('/fetch/<jobid>')
-class Fetch(Resource):
-
-    # @use_kwargs(CancelSchema())
-    def get(self):
-        return 'ok'
-
-
 
