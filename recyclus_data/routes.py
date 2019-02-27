@@ -1,11 +1,10 @@
 from flask import Blueprint, current_app as app, request
 from flask_restplus import Api, Resource
 from webargs.flaskparser import use_args
-import json
 from pathlib import Path
 
 from .schema import store_args, internal_store_args
-# from . import datastore
+from .datastore import datastore
 blueprint = Blueprint('api', __name__)
 
 api = Api(blueprint,
@@ -24,6 +23,12 @@ class Store(Resource):
         for name, f in request.files.items():
             app.logger.debug('fields: %s: %s ', name, f.filename)
             f.save(str(path / f.filename))
+        datastore.db.files.insert_one({
+            'user': args['user'],
+            'jobid': args['jobid'],
+            'files': request.files.keys()
+        })
+
 
 # @api.route('/store')
 # class Store(Resource):

@@ -5,7 +5,8 @@ db_dir = Path('.').parent.resolve()
 
 
 class Config(object):
-    pass
+    MONGO_URI = "mongodb://datastore-db:27017"
+
 
 class DevelopmentConfig(Config):
     ENV = 'development'

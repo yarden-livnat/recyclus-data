@@ -4,6 +4,7 @@ from werkzeug.contrib.fixers import ProxyFix
 
 from .config import config_by_name
 from .routes import blueprint
+from .datastore import datastore
 
 
 def create_app(config_name='development'):
@@ -22,7 +23,18 @@ def create_app(config_name='development'):
     except OSError:
         pass
 
+    datastore.init_app(app)
     app.register_blueprint(blueprint, url_prefix='/api')
 
-    print(f'**** recyclus_sim [{config_name}] created')
+    print(f'**** recyclus_datastore [{config_name}] created')
+    
+    test(app)
     return app
+
+
+def test(app):
+    print('testing')
+    print('datastore', datastore)
+    print('db', datastore.db)
+    print('app.config', app.config['MONGO_URI'])
+
