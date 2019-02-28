@@ -22,8 +22,8 @@ class Store(Resource):
     def post(self, args):
         datastore.store(args, request.files)
 
-
-@api.route('/list')
+import json
+@api.route('/files')
 class User(Resource):
     @use_args(list_args)
     def get(self, args):
@@ -40,7 +40,7 @@ class Fetch(Resource):
         identity = args.pop('identity')
         args['user'] = identity['user']
         try:
-            path, name = datastore.fetch(identity['user'], args['jobid'], args['file'])
+            path, name = datastore.fetch(identity['user'], args['jobid'], args['filename'])
             return send_file(path, attachment_filename=name)
         except FileNotFoundError:
             return {

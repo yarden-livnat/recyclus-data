@@ -28,5 +28,5 @@ list_args = {
 fetch_args = {
     'identity': fields.Nested(identity_args),
     'jobid': fields.Str(equired=True),
-    'file': fields.Str(required=True)
+    'filename': fields.Str(required=True)
 }
