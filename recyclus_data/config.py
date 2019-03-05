@@ -1,11 +1,13 @@
 """Application configuration."""
+import os
 from pathlib import Path
 
 db_dir = Path('.').parent.resolve()
 
 
 class Config(object):
-    MONGO_URI = "mongodb://datastore-db:27017/datastore"
+    MONGO_URI = os.environ.get('MONGO_URI', 'mongodb://datastore-db:27017/datastore')
+    # MONGO_URI = "mongodb://datastore-db:27017/datastore"
 
 
 class DevelopmentConfig(Config):
