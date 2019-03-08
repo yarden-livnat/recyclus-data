@@ -5,10 +5,18 @@ identity_args = {
     'roles': fields.Str(required=True)
 }
 
+
 internal_store_args = {
     'user': fields.Str(required=True),
     'name': fields.Str(required=True),
     'jobid': fields.Str(required=True)
+}
+
+
+internal_delete_args = {
+    'user': fields.Str(),
+    'name': fields.Str(),
+    'jobid': fields.Str()
 }
 
 

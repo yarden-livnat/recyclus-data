@@ -1,7 +1,10 @@
+from flask import current_app as app
+from flask_pymongo import PyMongo
+import json
 from pathlib import Path
+import shutil
 import uuid
 
-from flask_pymongo import PyMongo
 
 files_dir = Path('/files')
 
@@ -21,7 +24,7 @@ def store(args, files):
         'name': args['name'],
         'jobid': args['jobid'],
         'path': str(path),
-        'files': [ f.filename for f in files.values()]
+        'files': [f.filename for f in files.values()]
     }
 
     mongo.db.files.insert_one(record)
@@ -32,8 +35,8 @@ def store(args, files):
 
 def find(args):
     fields = ['user', 'name', 'jobid', 'files']
-    results = [ dict([(name, value) for name, value in entry.items() if name in fields])
-                for entry in mongo.db.files.find(args)]
+    results = [dict([(name, value) for name, value in entry.items() if name in fields])
+               for entry in mongo.db.files.find(args)]
     return results
 
 
@@ -42,3 +45,16 @@ def fetch(user, jobid, filename):
     if record:
         return str(Path(record['path']) / filename), filename
     raise FileNotFoundError
+
+
+def delete(args):
+    app.logger.debug('delete %s', json.dumps(args))
+    records = mongo.db.files.find(args)
+    for record in records:
+        try:
+            app.logger.debug(f'delete directory {record["path"]}')
+            shutil.rmtree(record["path"])
+        except OSError as e:
+            app.logger.error(f'Error: {e.filename}  - {e.strerror}')
+
+    mongo.db.files.delete_many(args)

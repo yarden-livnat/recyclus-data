@@ -1,9 +1,8 @@
 from flask import Blueprint, current_app as app, request, send_file
 from flask_restplus import Api, Resource
 from webargs.flaskparser import use_args
-from pathlib import Path
 
-from .schema import store_args, internal_store_args, list_args, fetch_args
+from .schema import store_args, internal_delete_args, internal_store_args, list_args, fetch_args
 from . import datastore
 
 
@@ -22,7 +21,15 @@ class Store(Resource):
     def post(self, args):
         datastore.store(args, request.files)
 
-import json
+
+@api.route('/internal/delete')
+class InternalDelete(Resource):
+    @use_args(internal_delete_args)
+    def delete(self, args):
+        app.logger.debug('internal delete')
+        datastore.delete(args)
+
+
 @api.route('/files')
 class User(Resource):
     @use_args(list_args)
