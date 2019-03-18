@@ -21,7 +21,7 @@ def store(args, files):
 
     record = {
         'user': args['user'],
-        'name': args['name'],
+        'project': args['project'],
         'jobid': args['jobid'],
         'path': str(path),
         'files': [f.filename for f in files.values()]
@@ -34,7 +34,7 @@ def store(args, files):
 
 
 def find(args):
-    fields = ['user', 'name', 'jobid', 'files']
+    fields = ['user', 'project', 'jobid', 'files']
     results = [dict([(name, value) for name, value in entry.items() if name in fields])
                for entry in mongo.db.files.find(args)]
     return results

@@ -8,7 +8,7 @@ identity_args = {
 
 internal_store_args = {
     'user': fields.Str(required=True),
-    'name': fields.Str(required=True),
+    'project': fields.Str(required=True),
     'jobid': fields.Str(required=True)
 }
 
@@ -23,13 +23,13 @@ internal_delete_args = {
 store_args = {
     'identity': fields.Nested(identity_args),
     'user': fields.Str(required=True),
-    'name': fields.Str(required=True),
+    'project': fields.Str(required=True),
     'jobid': fields.Str(required=True)
 }
 
 list_args = {
     'identity': fields.Nested(identity_args),
-    'name': fields.Str(),
+    'project': fields.Str(),
     'jobid': fields.Str()
 }
 
