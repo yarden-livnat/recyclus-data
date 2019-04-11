@@ -34,10 +34,12 @@ def store(args, files):
 
 
 def find(args):
+    results = mongo.db.files.find(args)
+
     fields = ['user', 'project', 'jobid', 'files']
-    results = [dict([(name, value) for name, value in entry.items() if name in fields])
-               for entry in mongo.db.files.find(args)]
-    return results
+    files = [dict([(name, value) for name, value in entry.items() if name in fields])
+             for entry in results]
+    return files
 
 
 def fetch(user, jobid, filename):

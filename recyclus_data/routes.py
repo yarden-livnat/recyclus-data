@@ -34,9 +34,14 @@ class InternalDelete(Resource):
 class User(Resource):
     @use_args(list_args)
     def get(self, args):
-        identity = args.pop('identity')
-        args['user'] = identity['user']
-        return datastore.find(args)
+        try:
+            identity = args.pop('identity')
+            args['user'] = identity['user']
+            return datastore.find(args)
+        except Exception as e:
+            return {
+                'message': str(e)
+            }, 500
 
 
 @api.route('/fetch')
@@ -56,23 +61,4 @@ class Fetch(Resource):
                     'jobid': args['jobid'],
                     'filename': args['file']
                    }, 404
-
-
-# @api.route('/store')
-# class Store(Resource):
-#     @use_args(store_args)
-#     def post(self, args):
-#         # identity = args.pop('identity')
-#         # if args.get('user') is None:
-#         #     args['user'] = identity['user']
-#         # elif args.get('user') != identity['user']:
-#         #     if identity['roles'] != 'service':
-#         #         return {
-#         #             'message': 'only services can store files for a user'
-#         #         }, 404
-#         path = Path('/repository') / args['jobid']
-#         path.mkdir(parents=True, exist_ok=True)
-#         for name, f in request.files.items():
-#             app.logger.debug('fields: %s: %s ', name, f.filename)
-#             f.save(str(path / f.filename))
 
