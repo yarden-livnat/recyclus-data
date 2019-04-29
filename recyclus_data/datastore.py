@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from flask import current_app as app
 from flask_pymongo import PyMongo
 import json
@@ -34,10 +35,10 @@ def store(args, files):
 
 
 def find(args):
-    results = mongo.db.files.find(args)
+    results = mongo.db.files.find(args).sort('jobid')
 
     fields = ['user', 'project', 'jobid', 'files']
-    files = [dict([(name, value) for name, value in entry.items() if name in fields])
+    files = [dict([(field, entry[field]) for field in fields if field in entry])
              for entry in results]
     return files
 
