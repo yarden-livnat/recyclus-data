@@ -7,15 +7,9 @@ from flask_script import Manager
 
 from recyclus_data import create_app
 
-app = create_app(os.getenv('FLASK_ENV') or 'development')
-
-# app.app_context().push()
+app = create_app(os.getenv('FLASK_ENV') or 'production')
 
 manager = Manager(app)
-
-# migrate = Migrate(app, db)
-
-# manager.add_command('db', MigrateCommand)
 
 @manager.command
 def run():

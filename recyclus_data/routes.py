@@ -59,6 +59,6 @@ class Fetch(Resource):
                     'message': 'File not found',
                     'user': identity['user'],
                     'jobid': args['jobid'],
-                    'filename': args['file']
+                    'filename': args['filename']
                    }, 404
 
