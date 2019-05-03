@@ -3,10 +3,12 @@ import os
 from pathlib import Path
 
 db_dir = Path('.').parent.resolve()
+user = os.getenv("MONGO_INITDB_ROOT_USERNAME")
+password = os.getenv("MONGO_INITDB_ROOT_PASSWORD")
 
 
 class Config(object):
-    MONGO_URI = os.environ.get('MONGO_URI', 'mongodb://datastore-db:27017/datastore')
+    MONGO_URI = f'mongodb://{user}:{password}@datastore-db:27017/datastore?authSource=admin'
 
 
 class DevelopmentConfig(Config):
