@@ -4,8 +4,7 @@
 ## This script allows the setting of password environment variables from files
 ## in order to support Docker secrets
 #####
-
-echo load secrets
+s
 PASSWORD_VARS=( MONGO_INITDB_ROOT_USERNAME MONGO_INITDB_ROOT_PASSWORD )
 
 for var in "${PASSWORD_VARS[@]}"; do

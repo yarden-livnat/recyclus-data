@@ -6,7 +6,6 @@ db_dir = Path('.').parent.resolve()
 user = os.getenv("MONGO_INITDB_ROOT_USERNAME")
 password = os.getenv("MONGO_INITDB_ROOT_PASSWORD")
 
-
 class Config(object):
     MONGO_URI = f'mongodb://{user}:{password}@datastore-db:27017/datastore?authSource=admin'
 
